@@ -650,7 +650,7 @@ document.getElementById('esp-required-msg').style.display = 'block';
 return;
 }
 nombreEstudiante = inputNombre.value.trim();
- enviarDatosNetlify(nombreEstudiante, especialidadSeleccionada);
+ 
 basePreguntas = especialidadSeleccionada === 'inicial' ? preguntasIni : preguntasPri;
 document.getElementById('sim-setup').style.display = 'none';
 const contenedorPreguntas = document.getElementById('sim-questions');
@@ -673,6 +673,7 @@ if (tiempoRestante <= 0) {
 clearInterval(intervaloTiempo);
 alert("¡El tiempo límite de 20 minutos ha expirado! Tu intento será procesado automáticamente.");
 finalizarTrivia();
+enviarDatosNetlify(nombreEstudiante, especialidadSeleccionada, "Completado");
 }
 }, 1000);
 }
@@ -723,6 +724,7 @@ basePreguntas.forEach((p, i) => { if (respuestasUsuario[i] === p.correct) correc
 let puntajeFinal = Math.round((correctas / basePreguntas.length) * 20);
 const espLabel = especialidadSeleccionada === 'inicial' ? 'Educación Inicial' : 'Educación Primaria';
 const contenedorResultados = document.getElementById('sim-results');
+ enviarDatosNetlify(nombreEstudiante, especialidadSeleccionada, `Nota: ${puntajeFinal} (${correctas} de ${basePreguntas.length})`);
 contenedorResultados.style.display = 'block';
 contenedorResultados.innerHTML = `
 <div style="text-align:center; margin-bottom:30px;">
@@ -865,11 +867,12 @@ alert("¡Sugerencia recibida de manera transparente por la delegatura! Gracias p
 document.getElementById('buzon-mensaje').value = "";
 cerrarHerramienta('buzon');
 }
- function enviarDatosNetlify(nombre, especialidad) {
+ function enviarDatosNetlify(nombre, especialidad, puntaje) {
     const formData = new FormData();
     formData.append('form-name', 'registro-aula-2026');
     formData.append('Nombre_Estudiante', nombre);
     formData.append('Especialidad', especialidad);
+    formData.append('Puntaje_Final', puntaje);
 
     fetch('/', {
         method: 'POST',
@@ -884,6 +887,7 @@ actualizarAnosGrados();
 <form name="registro-aula-2026" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="display:none;">
     <input type="text" name="Nombre_Estudiante">
     <input type="text" name="Especialidad">
+    <input type="text" name="Puntaje_Final">
 </form>
  
 </body>
