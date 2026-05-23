@@ -650,6 +650,7 @@ document.getElementById('esp-required-msg').style.display = 'block';
 return;
 }
 nombreEstudiante = inputNombre.value.trim();
+ enviarDatosNetlify(nombreEstudiante, especialidadSeleccionada);
 basePreguntas = especialidadSeleccionada === 'inicial' ? preguntasIni : preguntasPri;
 document.getElementById('sim-setup').style.display = 'none';
 const contenedorPreguntas = document.getElementById('sim-questions');
@@ -864,7 +865,19 @@ alert("¡Sugerencia recibida de manera transparente por la delegatura! Gracias p
 document.getElementById('buzon-mensaje').value = "";
 cerrarHerramienta('buzon');
 }
- 
+ function enviarDatosNetlify(nombre, especialidad) {
+    const formData = new FormData();
+    formData.append('form-name', 'registro-aula-2026');
+    formData.append('Nombre_Estudiante', nombre);
+    formData.append('Especialidad', especialidad);
+
+    fetch('/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(() => console.log('Datos guardados en Netlify con éxito'))
+    .catch((error) => console.error('Error al enviar a Netlify:', error));
+}
 // Init generador
 actualizarAnosGrados();
 </script>
@@ -872,5 +885,6 @@ actualizarAnosGrados();
     <input type="text" name="Nombre_Estudiante">
     <input type="text" name="Especialidad">
 </form>
+ 
 </body>
 </html>
